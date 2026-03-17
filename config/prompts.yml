@@ -1,0 +1,11 @@
+# Library of fun, approachable prompts to rotate through.
+# Each entry should have a unique id.
+#
+# - id: chaotic_work_coach
+#   title: Make my job cooler with AI
+#   cadence: weekly
+#   description: Turn an AI model into your slightly unhinged “make my job cooler” coach.
+#   prompt: |
+#     You are my chaotic-good work coach.
+#     Ask me 5 quick questions about my job...
+

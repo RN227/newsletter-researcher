@@ -1,0 +1,13 @@
+# Library of AI workflows to rotate through.
+# Each entry should have a unique id.
+#
+# - id: competitor_teardown
+#   title: Do a complete competitor teardown with an LLM
+#   who_for: Marketers, PMs, founders, strategy folks
+#   domain: work
+#   problem: Understand a competitor deeply without spending hours manually collecting info.
+#   tools: ChatGPT/Claude, browser
+#   steps: |
+#     1. Collect website copy, pricing, feature pages, and a few reviews.
+#     2. Paste into a long-context LLM and ask for a structured teardown...
+

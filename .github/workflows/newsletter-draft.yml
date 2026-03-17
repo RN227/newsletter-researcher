@@ -1,0 +1,35 @@
+name: Generate Brew & AI draft
+
+on:
+  schedule:
+    - cron: "0 9 * * SAT"
+  workflow_dispatch: {}
+
+jobs:
+  build-draft:
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Generate newsletter draft
+        run: |
+          python -m scripts.orchestrator --issue-number 20
+
+      - name: Upload drafts as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: newsletter-draft
+          path: newsletters/
+

@@ -1,0 +1,7 @@
+# Add up to ~8–10 candidate social posts per week.
+# Example:
+# - platform: x
+#   handle: example_handle
+#   url: https://x.com/example/status/123
+#   note: Optional note for context
+
