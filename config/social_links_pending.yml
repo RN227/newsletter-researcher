@@ -5,3 +5,17 @@
 #   url: https://x.com/example/status/123
 #   note: Optional note for context
 
+platform: x
+handle: DramaAlert
+url: https://x.com/DramaAlert/status/2033939940753461381?s=20
+note: Youtube took a strong stand against AI by asking users to label videos - my take - I feel that they're getting their data labeled by us
+  
+platform: x
+handle: stitchbygoogle
+url: https://x.com/stitchbygoogle/status/2034332847893574080
+note: Google rolled out Stitch, a new tool to help generate UI, hit or miss? Figma stock tumbled
+
+platform: linkedin
+handle: marie-schneegans
+url: https://www.linkedin.com/posts/marie-schneegans_michael-and-i-are-separating-romantically-activity-7439718578100187136-0oio/
+note: Has LinkedIn become the new Facebook? Is this what people post on LinkedIn now?
