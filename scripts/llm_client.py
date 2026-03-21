@@ -122,6 +122,8 @@ def comment_on_social(url: str, raw_text: str | None = None, note: str | None = 
         "You are helping draft the 'Trending on social' section of a friendly AI newsletter called Brew & AI.",
         "Write ONE short paragraph (2–4 sentences) explaining what this post is about and why it matters or is funny/interesting.",
         "Tone: conversational, smart, accessible to non-technical readers. No jargon.",
+        "Do not mention limitations, inability to access links, missing context, or ask follow-up questions.",
+        "Never include separators like --- and never output emojis-only lines.",
         "",
         f"Post URL: {url}",
     ]

@@ -11,3 +11,29 @@
 #     1. Collect website copy, pricing, feature pages, and a few reviews.
 #     2. Paste into a long-context LLM and ask for a structured teardown...
 
+- id: weekly_signal_brief
+  title: Turn scattered AI updates into a 30-minute weekly brief
+  who_for: Knowledge workers, founders, and operators
+  domain: work
+  problem: You save lots of links during the week but cannot quickly decide what matters most.
+  tools: Claude/ChatGPT, Notes/Notion
+  steps: |
+    1. Paste 10-15 links you saved this week (news, posts, blogs, podcasts).
+    2. Ask the model to tag each item by topic, impact, and urgency.
+    3. Ask for a ranked top 5 with one-line "why this matters" summaries.
+    4. Ask for a 5-bullet executive brief you can read in under 5 minutes.
+    5. Save that brief in your weekly review doc and act on one item.
+
+- id: competitor_message_gap_scan
+  title: Find competitor messaging gaps in 20 minutes
+  who_for: Marketers, PMs, indie builders
+  domain: work
+  problem: You know competitors are shipping fast but cannot quickly spot where your message is weak.
+  tools: Claude/ChatGPT, browser
+  steps: |
+    1. Collect 3 competitor pages (homepage, pricing, one feature page).
+    2. Paste your own equivalent 3 pages.
+    3. Ask the model to compare claims, value props, and proof points.
+    4. Request 5 messaging gaps with suggested copy fixes.
+    5. Pick one gap and ship an updated headline + CTA this week.
+

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import List
 
 import feedparser
+import yaml
 
 from scripts.models import NewsItem
 from scripts.utils_history import append_history, get_recent_ids
@@ -11,10 +13,12 @@ from scripts.llm_client import summarize_news_items
 
 
 FEEDS = [
-    # Broad tech/AI-focused feeds. You can adjust these as you like.
-    "https://www.reutersagency.com/feed/?best-topics=technology",
-    "https://blogs.nvidia.com/feed/",
+    # Broad AI/tech feeds.
+    "https://techcrunch.com/category/artificial-intelligence/feed/",
+    "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",
+    "https://www.wired.com/feed/tag/ai/latest/rss",
 ]
+WEEKLY_READS_PATH = Path("config/weekly_reads_pending.yml")
 
 
 def _fetch_candidate_articles(issue_date: datetime) -> List[dict]:
@@ -55,6 +59,27 @@ def _fetch_candidate_articles(issue_date: datetime) -> List[dict]:
     return items
 
 
+def _fallback_from_weekly_reads() -> List[dict]:
+    """
+    If no feed items were found, reuse Weekly Reads links as a fallback pool
+    so the section is never empty.
+    """
+    if not WEEKLY_READS_PATH.exists():
+        return []
+    with WEEKLY_READS_PATH.open("r", encoding="utf-8") as f:
+        data = yaml.safe_load(f) or []
+    if not isinstance(data, list):
+        return []
+
+    items: List[dict] = []
+    for entry in data[:5]:
+        title = (entry or {}).get("title") or ""
+        url = (entry or {}).get("url") or ""
+        if title and url:
+            items.append({"title": title, "url": url, "description": ""})
+    return items
+
+
 def run(issue_date: datetime) -> List[NewsItem]:
     """
     Build up to 5 broadly understandable AI news items from the past week,
@@ -63,6 +88,8 @@ def run(issue_date: datetime) -> List[NewsItem]:
     recent_ids = get_recent_ids("news")
 
     candidates = _fetch_candidate_articles(issue_date)
+    if not candidates:
+        candidates = _fallback_from_weekly_reads()
     candidates = [c for c in candidates if c.get("url") not in recent_ids]
 
     # Keep at most 8–10 for the LLM to process
