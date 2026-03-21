@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import os
-from typing import List
+from typing import List, Optional
+import json
 
 from anthropic import Anthropic, APIStatusError
 
@@ -77,8 +78,6 @@ def summarize_news_items(raw_items: List[dict]) -> List[dict]:
 
     text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
 
-    import json
-
     try:
         parsed = json.loads(text)
     except json.JSONDecodeError:
@@ -148,4 +147,77 @@ def comment_on_social(url: str, raw_text: str | None = None, note: str | None = 
 
     text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
     return text.strip() or (note or "Interesting AI-related post worth highlighting.")
+
+
+def generate_workflow_from_web(signals: List[dict]) -> Optional[dict]:
+    if not signals:
+        return None
+
+    prompt_parts = [
+        "Create one practical 'AI workflow of the week' for a general audience.",
+        "Use the provided web signals as inspiration.",
+        "The workflow must be useful, specific, and runnable in 10-30 minutes.",
+        "Return JSON only in this exact shape:",
+        '{"id":"...", "title":"...", "who_for":"...", "domain":"work", "problem":"...", "tools":"...", "steps_codeblock":"1. ..."}',
+        "",
+        "Web signals:",
+    ]
+    for idx, s in enumerate(signals[:8]):
+        prompt_parts.append(f"[{idx}] {s.get('title','')} | {s.get('url','')}")
+        desc = s.get("description") or ""
+        if desc:
+            prompt_parts.append(f"Summary: {desc[:400]}")
+        prompt_parts.append("")
+
+    client = _client()
+    msg = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=500,
+        temperature=0.5,
+        messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
+    )
+    text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(parsed, dict):
+        return None
+    return parsed
+
+
+def generate_prompt_from_web(signals: List[dict]) -> Optional[dict]:
+    if not signals:
+        return None
+
+    prompt_parts = [
+        "Create one fun, simple 'Try this out - prompts' entry for a weekly AI newsletter.",
+        "Prompt should be easy for non-technical users and useful in daily or weekly routines.",
+        "Return JSON only in this exact shape:",
+        '{"id":"...", "title":"...", "cadence":"weekly", "description":"...", "prompt_text":"..."}',
+        "",
+        "Web signals:",
+    ]
+    for idx, s in enumerate(signals[:8]):
+        prompt_parts.append(f"[{idx}] {s.get('title','')} | {s.get('url','')}")
+        desc = s.get("description") or ""
+        if desc:
+            prompt_parts.append(f"Summary: {desc[:400]}")
+        prompt_parts.append("")
+
+    client = _client()
+    msg = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=400,
+        temperature=0.7,
+        messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
+    )
+    text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(parsed, dict):
+        return None
+    return parsed
 

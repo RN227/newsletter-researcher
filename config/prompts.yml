@@ -9,28 +9,3 @@
 #     You are my chaotic-good work coach.
 #     Ask me 5 quick questions about my job...
 
-- id: weekly_work_upgrade
-  title: Weekly work upgrade challenge
-  cadence: weekly
-  description: A fun weekly prompt to make one part of your job faster and more interesting.
-  prompt: |
-    You are my practical AI coach.
-    Ask me 3 quick questions about my current workload, then suggest 3 small AI experiments I can run this week.
-    For each experiment, include:
-    - what to do in 10 minutes,
-    - which tool to use,
-    - expected outcome,
-    - one sentence I can share with my team if it works.
-
-- id: daily_focus_reset
-  title: Daily focus reset with AI
-  cadence: daily
-  description: A simple daily prompt to reduce overwhelm and focus on what matters.
-  prompt: |
-    I have too many tasks today.
-    Help me create a focused plan:
-    1) Ask me for my top 5 tasks.
-    2) Pick the 2 highest impact tasks.
-    3) Break each into a 20-minute first step.
-    4) Draft a short message I can send to update stakeholders by end of day.
-

@@ -1,59 +1,64 @@
 from __future__ import annotations
 
-from datetime import datetime
-from pathlib import Path
+from datetime import datetime, timedelta
 from typing import List, Optional
 
-import yaml
+import feedparser
 
 from scripts.models import WorkflowOfWeek
 from scripts.utils_history import append_history, get_recent_ids
+from scripts.llm_client import generate_workflow_from_web
 
 
-CONFIG_PATH = Path("config/workflows.yml")
+FEEDS = [
+    "https://news.google.com/rss/search?q=AI+workflow+productivity&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=AI+automation+use+cases&hl=en-US&gl=US&ceid=US:en",
+]
 
 
-def _load_workflows() -> List[dict]:
-    if not CONFIG_PATH.exists():
-        return []
-    with CONFIG_PATH.open("r", encoding="utf-8") as f:
-        data = yaml.safe_load(f) or []
-    if not isinstance(data, list):
-        return []
-    return data
+def _fetch_workflow_signals(issue_date: datetime) -> List[dict]:
+    one_week_ago = issue_date - timedelta(days=7)
+    signals: List[dict] = []
+    for url in FEEDS:
+        feed = feedparser.parse(url)
+        for entry in getattr(feed, "entries", []):
+            link = getattr(entry, "link", "") or ""
+            title = getattr(entry, "title", "") or ""
+            summary = getattr(entry, "summary", "") or ""
+            if not link or not title:
+                continue
+            published_parsed = getattr(entry, "published_parsed", None)
+            if published_parsed:
+                published_dt = datetime(
+                    published_parsed.tm_year,
+                    published_parsed.tm_mon,
+                    published_parsed.tm_mday,
+                )
+                if published_dt < one_week_ago:
+                    continue
+            signals.append({"title": title, "url": link, "description": summary})
+    return signals
 
 
 def run(issue_date: datetime) -> Optional[WorkflowOfWeek]:
     recent_ids = get_recent_ids("workflows")
-    workflows = _load_workflows()
-
-    chosen = None
-    for wf in workflows:
-        wf_id = (wf or {}).get("id")
-        if not wf_id or wf_id in recent_ids:
-            continue
-        chosen = wf
-        break
-
-    if not chosen and workflows:
-        chosen = workflows[0]
-
-    if not chosen:
+    signals = _fetch_workflow_signals(issue_date)
+    generated = generate_workflow_from_web(signals)
+    if not generated:
         return None
 
-    wf_id = chosen.get("id", "workflow")
-
-    steps = chosen.get("steps") or ""
-    steps_codeblock = steps.strip()
+    wf_id = generated.get("id", "workflow")
+    if wf_id in recent_ids:
+        wf_id = f"{wf_id}-{issue_date.date().isoformat()}"
 
     workflow = WorkflowOfWeek(
         id=wf_id,
-        title=chosen.get("title", "AI workflow of the week"),
-        who_for=chosen.get("who_for", ""),
-        domain=chosen.get("domain", ""),
-        problem=chosen.get("problem", ""),
-        tools=chosen.get("tools", ""),
-        steps_codeblock=steps_codeblock,
+        title=generated.get("title", "AI workflow of the week"),
+        who_for=generated.get("who_for", ""),
+        domain=generated.get("domain", "work"),
+        problem=generated.get("problem", ""),
+        tools=generated.get("tools", ""),
+        steps_codeblock=(generated.get("steps_codeblock") or "").strip(),
     )
 
     append_history("workflows", [wf_id], issue_date.date().isoformat())
