@@ -9,29 +9,49 @@ Mar 21, 2026
 
 - x / DramaAlert – [https://x.com/DramaAlert/status/2033939940753461381?s=20](https://x.com/DramaAlert/status/2033939940753461381?s=20)
 
-I wasn't able to load the actual post content from that link — it only returned raw page code without the tweet text. Could you paste the actual text of the post directly so I can write the paragraph accurately?
-
-In the meantime, based on your editor note, here's a draft I can refine once you share the post:
-
----
-
-YouTube recently announced that creators must label videos containing AI-generated content — framed as a transparency win for viewers. But here's the cheeky flip side: by asking millions of users to tag AI content themselves, YouTube is essentially building a massive, crowd-sourced dataset that could be used to train future AI to *detect* that very content. So the "anti-AI" move might actually be fueling the AI machine — which is either brilliant, ironic, or both.
-
----
-
-Happy to tweak this once you share the actual post text! 🎯
+YouTube recently announced that creators must label their videos if they contain AI-generated content — a move framed as a transparency win for viewers. But there's a clever twist worth thinking about: by asking millions of users to tag AI content themselves, YouTube may be quietly building one of the most valuable datasets in the world for training its own AI to detect synthetic media. It's a bit like asking people to sort your mail and calling it a civic duty — helpful, sure, but someone's definitely getting the better end of that deal.
 
 - x / stitchbygoogle – [https://x.com/stitchbygoogle/status/2034332847893574080](https://x.com/stitchbygoogle/status/2034332847893574080)
 
-**Google just launched Stitch, an AI tool that turns your design ideas into actual app interfaces — no coding required.** The design and dev community is buzzing (and a little nervous), because tools like this could eventually replace some of the work done in popular design platforms like Figma — which, not coincidentally, saw its stock take a hit right around the same time. Whether Stitch is a game-changer or just another flashy demo is still up for debate, but the fact that investors are already spooked says a lot about where AI-powered design is heading.
+Google just launched Stitch, an AI tool that can automatically generate user interface designs — basically, it tries to do some of what designers use Figma for, but with a text prompt instead of hours of manual work. The reaction online has been mixed, with some people impressed by the speed and others pointing out the results can look a little rough around the edges. What's hard to ignore, though, is that Figma's stock took a noticeable hit on the news, which says a lot about how seriously the market is taking AI's creep into the design world.
 
 - linkedin / marie-schneegans – [https://www.linkedin.com/posts/marie-schneegans_michael-and-i-are-separating-romantically-activity-7439718578100187136-0oio/](https://www.linkedin.com/posts/marie-schneegans_michael-and-i-are-separating-romantically-activity-7439718578100187136-0oio/)
 
-**LinkedIn is officially the new Facebook — and we're here for it.** Someone posted what sounds like a breakup announcement on LinkedIn, the platform historically reserved for job updates and "excited to share that I've joined..." humble-brags. The post went viral, sparking a wave of reactions from people who couldn't decide whether to laugh, cringe, or simply hit "connect." It's a funny reminder that the line between our professional and personal lives online keeps getting blurrier — and that no social platform is safe from oversharing.
+LinkedIn has been blurring the line between professional network and personal diary for a while, but this post takes the cake — Marie Schneegans opened up about her romantic separation from her co-founder Michael, turning what sounds like a Facebook status update into a LinkedIn moment. The post went viral precisely because it captures the ongoing identity crisis of the platform, where "I got promoted" now sits alongside "I got dumped." Whether you find it brave, oversharing, or just plain bizarre, it sparked a massive conversation about what LinkedIn is actually *for* anymore — and honestly, nobody seems to agree.
 
 # ☕ AI workflow of the week
 
+**Turn scattered AI updates into a 30-minute weekly brief**
+
+Who this is for: Knowledge workers, founders, and operators
+
+Problem: You save lots of links during the week but cannot quickly decide what matters most.
+
+Tools: Claude/ChatGPT, Notes/Notion
+
+```
+1. Paste 10-15 links you saved this week (news, posts, blogs, podcasts).
+2. Ask the model to tag each item by topic, impact, and urgency.
+3. Ask for a ranked top 5 with one-line "why this matters" summaries.
+4. Ask for a 5-bullet executive brief you can read in under 5 minutes.
+5. Save that brief in your weekly review doc and act on one item.
+```
+
 # ☕ Try this out - prompts
+
+**Weekly work upgrade challenge**
+
+A fun weekly prompt to make one part of your job faster and more interesting.
+
+```
+You are my practical AI coach.
+Ask me 3 quick questions about my current workload, then suggest 3 small AI experiments I can run this week.
+For each experiment, include:
+- what to do in 10 minutes,
+- which tool to use,
+- expected outcome,
+- one sentence I can share with my team if it works.
+```
 
 # ☕ Weekly Reads
 
