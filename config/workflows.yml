@@ -1,13 +1,65 @@
-# Library of AI workflows to rotate through.
-# Each entry should have a unique id.
+# Pre-written workflows for the "AI Workflow of the Week" section.
 #
-# - id: competitor_teardown
-#   title: Do a complete competitor teardown with an LLM
-#   who_for: Marketers, PMs, founders, strategy folks
+# HOW IT WORKS:
+#   - If entries exist here, the script picks the first one and publishes it
+#     directly — no AI generation needed.
+#   - If this file is empty, Claude generates a new workflow automatically,
+#     using any previously published workflows as style/quality references.
+#
+# Add entries in the order you want them published (top = next up).
+# Used entries are automatically removed after each run.
+#
+# Required fields:
+#   id            - unique slug (e.g. competitor-teardown)
+#   title         - one-line description of the workflow
+#   who_for       - specific job roles this helps
+#   problem       - 2-4 sentences describing the pain point in plain language
+#   tools         - free AI tools needed (e.g. "ChatGPT, Claude, or Gemini")
+#   steps_codeblock - the 4 steps as plain text (see format below)
+#
+# Optional:
+#   domain        - defaults to "work"
+#
+# Steps format — follow this arc exactly:
+#   Step 1 — Gather: collect the raw material or context needed
+#   Step 2 — Prompt: send a clear, structured prompt to the AI
+#   Step 3 — Refine: tweak the output for your specific role or angle
+#   Step 4 — Act: turn the output into a concrete deliverable
+#
+# Example:
+# - id: competitor-teardown
+#   title: Do a full competitor teardown in 30 minutes
+#   who_for: Marketers, PMs, founders, strategy leads
 #   domain: work
-#   problem: Understand a competitor deeply without spending hours manually collecting info.
-#   tools: ChatGPT/Claude, browser
-#   steps: |
-#     1. Collect website copy, pricing, feature pages, and a few reviews.
-#     2. Paste into a long-context LLM and ask for a structured teardown...
-
+#   problem: >
+#     You need to understand a competitor deeply before a big pitch or planning
+#     session, but you don't have hours to manually comb through their site,
+#     pricing, and reviews. The information is all out there — it just takes
+#     forever to pull together in a useful way.
+#   tools: ChatGPT, Claude, or Gemini (free tier is fine)
+#   steps_codeblock: |
+#     Step 1 — Gather your raw material
+#
+#     Go to your competitor's website and copy: their homepage headline,
+#     the features/pricing page, and 5-10 customer reviews from G2 or Capterra.
+#     Paste it all into a single doc.
+#
+#     Step 2 — Prompt the model
+#
+#     Paste your collected content and use this prompt:
+#     "You are a strategic analyst. Based on the content below, give me:
+#     1) Their core value proposition in one sentence
+#     2) Who their ideal customer appears to be
+#     3) Their three biggest strengths and three biggest weaknesses
+#     4) One thing they do better than most and one clear gap in their offering"
+#
+#     Step 3 — Refine for your angle
+#
+#     Ask a follow-up: "Now reframe this from the perspective of someone
+#     competing against them. What's the most compelling counter-narrative
+#     we could use in our positioning?"
+#
+#     Step 4 — Turn it into a deliverable
+#
+#     Ask: "Summarise this as a one-page briefing I could share with my team
+#     before our next strategy meeting." Save it, share it, done.

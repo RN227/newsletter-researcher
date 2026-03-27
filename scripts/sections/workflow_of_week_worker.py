@@ -17,16 +17,25 @@ FEEDS = [
     "https://news.google.com/rss/search?q=AI+automation+use+cases&hl=en-US&gl=US&ceid=US:en",
 ]
 
-THEME_CONFIG_PATH = Path("config/weekly_theme.yml")
+WORKFLOWS_CONFIG_PATH = Path("config/workflows.yml")
 
 
-def _load_workflow_topic() -> Optional[str]:
-    if not THEME_CONFIG_PATH.exists():
-        return None
-    with THEME_CONFIG_PATH.open("r", encoding="utf-8") as f:
-        data = yaml.safe_load(f) or {}
-    topic = (data.get("workflow_topic") or "").strip()
-    return topic if topic else None
+def _load_workflows() -> List[dict]:
+    if not WORKFLOWS_CONFIG_PATH.exists():
+        return []
+    with WORKFLOWS_CONFIG_PATH.open("r", encoding="utf-8") as f:
+        data = yaml.safe_load(f) or []
+    if not isinstance(data, list):
+        return []
+    return [w for w in data if isinstance(w, dict) and w.get("id")]
+
+
+def _save_workflows(items: List[dict]) -> None:
+    with WORKFLOWS_CONFIG_PATH.open("w", encoding="utf-8") as f:
+        if items:
+            yaml.dump(items, f, allow_unicode=True, default_flow_style=False)
+        else:
+            f.write("")
 
 
 def _fetch_workflow_signals(issue_date: datetime) -> List[dict]:
@@ -57,17 +66,50 @@ def _fetch_workflow_signals(issue_date: datetime) -> List[dict]:
 
 def run(issue_date: datetime) -> Optional[WorkflowOfWeek]:
     recent_ids = get_recent_ids("workflows")
+    all_workflows = _load_workflows()
 
-    topic = _load_workflow_topic()
-    if topic:
-        print(f"[workflow] Using weekly theme: '{topic}'")
-    else:
-        signals = _fetch_workflow_signals(issue_date)
-        print(f"[workflow] {len(signals)} signals fetched from feeds")
+    # Split into unused (available to publish) and used (available as examples)
+    unused = [w for w in all_workflows if w.get("id") not in recent_ids]
+    used_examples = [w for w in all_workflows if w.get("id") in recent_ids]
+
+    if unused:
+        # Pick the first unused workflow and publish it directly — no LLM needed
+        chosen = unused[0]
+        wf_id = chosen.get("id", "workflow")
+        print(f"[workflow] Using pre-written workflow: '{chosen.get('title', '')}'")
+
+        workflow = WorkflowOfWeek(
+            id=wf_id,
+            title=chosen.get("title", "AI workflow of the week"),
+            who_for=chosen.get("who_for", ""),
+            domain=chosen.get("domain", "work"),
+            problem=chosen.get("problem", ""),
+            tools=chosen.get("tools", ""),
+            steps_codeblock=(chosen.get("steps_codeblock") or "").strip(),
+        )
+
+        append_history("workflows", [wf_id], issue_date.date().isoformat())
+
+        # Remove used workflow from the config file
+        remaining = [w for w in all_workflows if w.get("id") != wf_id]
+        _save_workflows(remaining)
+        print(f"[workflow] Removed '{wf_id}' from workflows config")
+
+        return workflow
+
+    # No pre-written workflows available — generate one with Claude.
+    # Pass any previously-used workflows as style examples so Claude matches
+    # the quality and format of what's already been published.
+    print(f"[workflow] No pre-written workflows — generating with Claude")
+    if used_examples:
+        print(f"[workflow] Passing {len(used_examples)} past workflow(s) as style examples")
+
+    signals = _fetch_workflow_signals(issue_date)
+    print(f"[workflow] {len(signals)} signals fetched from feeds")
 
     generated = generate_workflow_from_web(
-        signals=[] if topic else signals,
-        topic=topic,
+        signals=signals,
+        examples=used_examples if used_examples else None,
     )
     print(f"[workflow] LLM {'succeeded' if generated else 'returned None'}")
 
