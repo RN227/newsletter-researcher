@@ -1,0 +1,9 @@
+# Optional: set a theme/topic to guide this week's Workflow and Prompt sections.
+# Leave blank to let Claude choose based on recent AI news signals.
+#
+# Examples:
+#   workflow_topic: "competitive intelligence for sales teams"
+#   prompt_topic: "help me think through a career decision"
+
+workflow_topic: ""
+prompt_topic: ""

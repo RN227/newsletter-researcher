@@ -28,7 +28,8 @@ jobs:
 
       - name: Generate newsletter draft
         run: |
-          python -m scripts.orchestrator --issue-number 20
+          ISSUE_NUM=$(ls newsletters/*.md 2>/dev/null | wc -l)
+          python -m scripts.orchestrator --issue-number $((ISSUE_NUM + 1))
 
       - name: Commit newsletters back to repo
         run: |

@@ -1,0 +1,7 @@
+# Paste article links you want featured in "AI in the News" this week.
+# These are given priority over RSS-fetched articles.
+# Used items are automatically removed after each run.
+#
+# - title: Article title (optional — Claude will rewrite it anyway)
+#   url: https://...
+#   note: Optional context or angle to guide the summary
