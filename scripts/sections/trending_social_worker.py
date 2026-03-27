@@ -82,9 +82,9 @@ def run(issue_date: datetime) -> List[SocialItem]:
 
     append_history("social", [i.post_url for i in items], issue_date.date().isoformat())
 
-    # Remove used items from the config YAML
-    used_urls = {i.post_url for i in items}
-    remaining = [e for e in raw_links if (e or {}).get("url") not in used_urls]
+    # Remove used items from the config YAML (both this run and previously used)
+    all_used = recent_ids | {i.post_url for i in items}
+    remaining = [e for e in raw_links if (e or {}).get("url") not in all_used]
     if len(remaining) != len(raw_links):
         _save_pending_links(remaining)
         print(f"[social] Removed {len(raw_links) - len(remaining)} used items from config")

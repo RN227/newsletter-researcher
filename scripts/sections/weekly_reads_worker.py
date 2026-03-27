@@ -101,9 +101,9 @@ def run(issue_date: datetime) -> List[WeeklyRead]:
     if urls_used:
         append_history("reads", urls_used, issue_date.date().isoformat())
 
-    # Remove used items from config YAML
-    used_url_set = set(urls_used)
-    remaining = [e for e in raw if (e or {}).get("url") not in used_url_set]
+    # Remove used items from config YAML (both this run and previously used)
+    all_used = recent_ids | set(urls_used)
+    remaining = [e for e in raw if (e or {}).get("url") not in all_used]
     if len(remaining) != len(raw):
         _save_reads(remaining)
         print(f"[reads] Removed {len(raw) - len(remaining)} used items from config")

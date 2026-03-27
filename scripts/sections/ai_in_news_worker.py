@@ -125,9 +125,9 @@ def run(issue_date: datetime) -> List[NewsItem]:
     # 6. Update history
     append_history("news", used_urls, issue_date.date().isoformat())
 
-    # 7. Remove processed curated items from config YAML
-    used_url_set = set(used_urls)
-    remaining_curated = [c for c in curated_raw if c.get("url") not in used_url_set]
+    # 7. Remove processed curated items from config YAML (both this run and previously used)
+    all_used = recent_ids | set(used_urls)
+    remaining_curated = [c for c in curated_raw if c.get("url") not in all_used]
     if len(remaining_curated) != len(curated_raw):
         _save_curated_links(remaining_curated)
         print(f"[news] Removed {len(curated_raw) - len(remaining_curated)} used items from news config")
