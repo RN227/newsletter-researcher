@@ -1,10 +1,11 @@
 # Pre-written workflows for the "AI Workflow of the Week" section.
 #
 # HOW IT WORKS:
-#   - If entries exist here, the script picks the first one and publishes it
-#     directly — no AI generation needed.
-#   - If this file is empty, Claude generates a new workflow automatically,
-#     using any previously published workflows as style/quality references.
+#   - If entries exist here, the script picks the first one and passes it to
+#     Claude to flesh out and polish into the final format. Your entry can be
+#     as rough as just a title and a few notes — Claude does the rest.
+#   - If this file is empty, Claude generates a workflow from scratch,
+#     using any previously published ones as style/quality references.
 #
 # Add entries in the order you want them published (top = next up).
 # Used entries are automatically removed after each run.

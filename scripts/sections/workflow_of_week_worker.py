@@ -73,34 +73,51 @@ def run(issue_date: datetime) -> Optional[WorkflowOfWeek]:
     used_examples = [w for w in all_workflows if w.get("id") in recent_ids]
 
     if unused:
-        # Pick the first unused workflow and publish it directly — no LLM needed
+        # Pass the author's rough draft to Claude to flesh out into the full format.
+        # The entry can be as sparse as a title + a few notes — Claude does the rest.
         chosen = unused[0]
         wf_id = chosen.get("id", "workflow")
-        print(f"[workflow] Using pre-written workflow: '{chosen.get('title', '')}'")
+        print(f"[workflow] Polishing author draft: '{chosen.get('title', '')}'")
+
+        signals = _fetch_workflow_signals(issue_date)
+        generated = generate_workflow_from_web(
+            signals=signals,
+            draft=chosen,
+            examples=used_examples if used_examples else None,
+        )
+        print(f"[workflow] LLM {'succeeded' if generated else 'returned None'}")
+
+        if not generated:
+            return None
+
+        # Keep the original id so history tracking works
+        generated["id"] = wf_id
+        if wf_id in recent_ids:
+            wf_id = f"{wf_id}-{issue_date.date().isoformat()}"
+            generated["id"] = wf_id
 
         workflow = WorkflowOfWeek(
             id=wf_id,
-            title=chosen.get("title", "AI workflow of the week"),
-            who_for=chosen.get("who_for", ""),
-            domain=chosen.get("domain", "work"),
-            problem=chosen.get("problem", ""),
-            tools=chosen.get("tools", ""),
-            steps_codeblock=(chosen.get("steps_codeblock") or "").strip(),
+            title=generated.get("title", chosen.get("title", "AI workflow of the week")),
+            who_for=generated.get("who_for", chosen.get("who_for", "")),
+            domain=generated.get("domain", chosen.get("domain", "work")),
+            problem=generated.get("problem", chosen.get("problem", "")),
+            tools=generated.get("tools", chosen.get("tools", "")),
+            steps_codeblock=(generated.get("steps_codeblock") or "").strip(),
         )
 
         append_history("workflows", [wf_id], issue_date.date().isoformat())
 
-        # Remove used workflow from the config file
-        remaining = [w for w in all_workflows if w.get("id") != wf_id]
+        # Remove the used draft from the config file
+        remaining = [w for w in all_workflows if w.get("id") != chosen.get("id")]
         _save_workflows(remaining)
-        print(f"[workflow] Removed '{wf_id}' from workflows config")
+        print(f"[workflow] Removed '{chosen.get('id')}' from workflows config")
 
         return workflow
 
-    # No pre-written workflows available — generate one with Claude.
-    # Pass any previously-used workflows as style examples so Claude matches
-    # the quality and format of what's already been published.
-    print(f"[workflow] No pre-written workflows — generating with Claude")
+    # No drafts in the config — generate one from scratch with Claude.
+    # Pass any previously published workflows as style/quality references.
+    print(f"[workflow] No author drafts — generating from scratch with Claude")
     if used_examples:
         print(f"[workflow] Passing {len(used_examples)} past workflow(s) as style examples")
 
