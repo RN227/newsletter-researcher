@@ -64,3 +64,16 @@
 #
 #     Ask: "Summarise this as a one-page briefing I could share with my team
 #     before our next strategy meeting." Save it, share it, done.
+
+- id: Claude Cowork
+  title: Claude Cowork has been doing rounds, this is how you set it up and what you can do with it
+  who_for: everyone
+  domain: everything
+  problem: Uploading files to AI cannot always be easy, here is how to simplify that
+  tools: Claude Desktop
+  steps: |
+    1. Download Claude Desktop
+    2. Switch to the Cowork feature (this only works for Pro or Max users)
+    3. Give it access (or mount) a folder. I gave it access to my downloads folder.
+    4. Ask it to pull up a doc from there and edit it, work on an excel file, read a PDF etc
+    5. I asked it to pull up my new rental agreement, check if anything stands out, look at any clauses that may be irregular etc.
