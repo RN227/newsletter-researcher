@@ -19,3 +19,18 @@
   handle: marie-schneegans
   url: https://www.linkedin.com/posts/marie-schneegans_michael-and-i-are-separating-romantically-activity-7439718578100187136-0oio/
   note: Has LinkedIn become the new Facebook? Is this what people post on LinkedIn now?
+
+- platform: x
+  handle: katiemiller
+  url: https://x.com/KatieMiller/status/2037520112996024801?s=20
+  note: Has AI finally lost it, what happened to guardrails
+
+- platform: x
+  handle: claudeai
+  url: https://x.com/claudeai/status/2036195789601374705
+  note: Anthropic have been shipping like a machine, new updates literally every day - this one basically gives Claude control over your computer. Sit back and let AI do everything
+
+- platform: x
+  handle: disclosetv
+  url: https://x.com/disclosetv/status/2037362278870176112
+  note: New models, extremely powerful, extremely dangerous?
