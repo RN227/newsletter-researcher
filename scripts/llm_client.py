@@ -166,7 +166,10 @@ def comment_on_social(url: str, raw_text: str | None = None, note: str | None = 
 
 
 def generate_workflow_from_web(
-    signals: List[dict], topic: Optional[str] = None
+    signals: List[dict],
+    topic: Optional[str] = None,
+    examples: Optional[List[dict]] = None,
+    draft: Optional[dict] = None,
 ) -> Optional[dict]:
     """
     Generate the 'AI Workflow of the Week' section.
@@ -182,7 +185,19 @@ def generate_workflow_from_web(
         "",
     ]
 
-    if topic:
+    if draft:
+        prompt_parts.append(
+            "The newsletter author has provided a rough draft or brief below. "
+            "Your job is to flesh it out into the full, polished format. "
+            "Keep the author's intent and any specific details they've included — "
+            "expand on them, don't replace them. Fill in anything missing."
+        )
+        prompt_parts.append("")
+        for key, val in draft.items():
+            if key != "id" and val:
+                prompt_parts.append(f"{key.upper()}: {val}")
+        prompt_parts.append("")
+    elif topic:
         prompt_parts.append(f"This week's theme: {topic}")
         prompt_parts.append("Design the workflow specifically around this theme.")
     else:
@@ -229,8 +244,21 @@ def generate_workflow_from_web(
         "",
     ]
 
+    if examples:
+        prompt_parts.append(
+            "Here are examples of past workflows from this newsletter. "
+            "Match their tone, depth, specificity, and format closely — "
+            "but create something entirely new and different in topic:"
+        )
+        for ex in examples[:3]:
+            prompt_parts.append(f"  Title: {ex.get('title', '')}")
+            prompt_parts.append(f"  Who for: {ex.get('who_for', '')}")
+            prompt_parts.append(f"  Problem: {ex.get('problem', '')}")
+            prompt_parts.append(f"  Tools: {ex.get('tools', '')}")
+            prompt_parts.append("")
+
     if signals and not topic:
-        prompt_parts.append("Web signals:")
+        prompt_parts.append("Web signals (use as inspiration for topic relevance):")
         for idx, s in enumerate(signals[:8]):
             prompt_parts.append(f"[{idx}] {s.get('title', '')} | {s.get('url', '')}")
             desc = s.get("description") or ""
