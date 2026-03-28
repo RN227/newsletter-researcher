@@ -14,6 +14,29 @@ def _client() -> Anthropic:
     return Anthropic(api_key=api_key)
 
 
+def _extract_json(text: str) -> str:
+    """
+    Robustly extract a JSON value (object or array) from an LLM response
+    that may contain preamble text, markdown code fences, or trailing prose.
+    """
+    text = text.strip()
+    # Strip markdown code fences if present
+    if "```" in text:
+        parts = text.split("```")
+        # parts[1] is the fenced block content (index 1 = inside first pair)
+        for part in parts[1::2]:  # every odd part is inside a fence
+            candidate = part.lstrip("json").strip()
+            if candidate.startswith("{") or candidate.startswith("["):
+                return candidate
+    # Fall back: find the first { or [ and the matching last } or ]
+    for start_char, end_char in (("{", "}"), ("[", "]")):
+        start = text.find(start_char)
+        end = text.rfind(end_char)
+        if start != -1 and end != -1 and end > start:
+            return text[start:end + 1]
+    return text
+
+
 def summarize_news_items(raw_items: List[dict]) -> List[dict]:
     """
     Given a list of raw news items ({title, url, description}), return exactly
@@ -73,15 +96,7 @@ def summarize_news_items(raw_items: List[dict]) -> List[dict]:
             for i, item in enumerate(raw_items[:3])
         ]
 
-    text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
-
-    # Strip markdown code fences if present
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("```", 2)[1]
-        if text.startswith("json"):
-            text = text[4:]
-        text = text.rsplit("```", 1)[0].strip()
+    text = _extract_json("".join(block.text for block in msg.content if block.type == "text"))  # type: ignore[attr-defined]
 
     try:
         parsed = json.loads(text)
@@ -291,13 +306,7 @@ def generate_workflow_from_web(
     except APIStatusError:
         return None
 
-    text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("```", 2)[1]
-        if text.startswith("json"):
-            text = text[4:]
-        text = text.rsplit("```", 1)[0].strip()
+    text = _extract_json("".join(block.text for block in msg.content if block.type == "text"))  # type: ignore[attr-defined]
 
     try:
         parsed = json.loads(text)
@@ -378,13 +387,7 @@ def generate_prompt_from_web(
     except APIStatusError:
         return None
 
-    text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("```", 2)[1]
-        if text.startswith("json"):
-            text = text[4:]
-        text = text.rsplit("```", 1)[0].strip()
+    text = _extract_json("".join(block.text for block in msg.content if block.type == "text"))  # type: ignore[attr-defined]
 
     try:
         parsed = json.loads(text)
@@ -441,13 +444,7 @@ def summarize_reads_items(raw_items: List[dict]) -> List[dict]:
     except APIStatusError:
         return _fallback_reads(raw_items)
 
-    text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("```", 2)[1]
-        if text.startswith("json"):
-            text = text[4:]
-        text = text.rsplit("```", 1)[0].strip()
+    text = _extract_json("".join(block.text for block in msg.content if block.type == "text"))  # type: ignore[attr-defined]
 
     try:
         parsed = json.loads(text)
