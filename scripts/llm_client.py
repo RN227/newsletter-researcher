@@ -513,6 +513,7 @@ def generate_linkedin_post(draft_summary: dict) -> str:
     prompt_parts = [
         "You are helping promote Brew & AI, a weekly newsletter that makes AI simple for non-technical professionals.",
         "Write a short LinkedIn post to announce this week's edition.",
+        "Return ONLY the post text — no intro like 'Here's a post:', no commentary after, no suggestions.",
         "",
         "Rules:",
         "- 3–5 sentences max. Punchy, conversational, not corporate.",
