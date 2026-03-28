@@ -306,21 +306,30 @@ def generate_workflow_from_web(
     try:
         msg = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=800,
+            max_tokens=1600,
             temperature=0.5,
             messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
         )
-    except APIStatusError:
+    except APIStatusError as e:
+        print(f"[workflow] API error: {e}")
         return None
 
-    text = _extract_json("".join(block.text for block in msg.content if block.type == "text"))  # type: ignore[attr-defined]
+    raw = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
+    print(f"[workflow] Raw LLM response length: {len(raw)} chars")
+    text = _extract_json(raw)
 
     try:
         parsed = json.loads(text)
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
+        print(f"[workflow] JSON parse error: {e}")
+        print(f"[workflow] Extracted text: {text[:300]}")
         return None
     if not isinstance(parsed, dict):
+        print(f"[workflow] Expected dict, got {type(parsed).__name__}")
         return None
+    # Normalize: LLM may return "steps" instead of "steps_codeblock"
+    if "steps" in parsed and "steps_codeblock" not in parsed:
+        parsed["steps_codeblock"] = parsed.pop("steps")
     return parsed
 
 
@@ -387,20 +396,26 @@ def generate_prompt_from_web(
     try:
         msg = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=600,
+            max_tokens=1200,
             temperature=0.7,
             messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
         )
-    except APIStatusError:
+    except APIStatusError as e:
+        print(f"[prompt] API error: {e}")
         return None
 
-    text = _extract_json("".join(block.text for block in msg.content if block.type == "text"))  # type: ignore[attr-defined]
+    raw = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
+    print(f"[prompt] Raw LLM response length: {len(raw)} chars")
+    text = _extract_json(raw)
 
     try:
         parsed = json.loads(text)
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
+        print(f"[prompt] JSON parse error: {e}")
+        print(f"[prompt] Extracted text: {text[:300]}")
         return None
     if not isinstance(parsed, dict):
+        print(f"[prompt] Expected dict, got {type(parsed).__name__}")
         return None
     return parsed
 
