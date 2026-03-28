@@ -82,16 +82,20 @@ def format_markdown(issue: IssueDraft) -> str:
     lines.append("")
     if issue.try_this_prompt:
         p = issue.try_this_prompt
+        if p.title:
+            lines.append(f"**{p.title}**")
+            lines.append("")
         if p.intro:
             lines.append(p.intro)
             lines.append("")
         if p.description:
             lines.append(p.description)
             lines.append("")
-        lines.append("```")
-        lines.append(p.prompt_text)
-        lines.append("```")
-        lines.append("")
+        if p.prompt_text:
+            lines.append("```")
+            lines.append(p.prompt_text)
+            lines.append("```")
+            lines.append("")
 
     # ── Weekly Reads ────────────────────────────────────────────────────────────
     lines.append("# ☕ Weekly reads")

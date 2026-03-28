@@ -96,6 +96,11 @@ def run(issue_date: datetime) -> Optional[WorkflowOfWeek]:
             wf_id = f"{wf_id}-{issue_date.date().isoformat()}"
             generated["id"] = wf_id
 
+        steps = (generated.get("steps_codeblock") or chosen.get("steps_codeblock") or chosen.get("steps") or "").strip()
+        if not steps:
+            print("[workflow] LLM returned empty steps — skipping")
+            return None
+
         workflow = WorkflowOfWeek(
             id=wf_id,
             title=generated.get("title", chosen.get("title", "AI workflow of the week")),
@@ -103,7 +108,7 @@ def run(issue_date: datetime) -> Optional[WorkflowOfWeek]:
             domain=generated.get("domain", chosen.get("domain", "work")),
             problem=generated.get("problem", chosen.get("problem", "")),
             tools=generated.get("tools", chosen.get("tools", "")),
-            steps_codeblock=(generated.get("steps_codeblock") or "").strip(),
+            steps_codeblock=steps,
         )
 
         append_history("workflows", [wf_id], issue_date.date().isoformat())
@@ -137,6 +142,11 @@ def run(issue_date: datetime) -> Optional[WorkflowOfWeek]:
     if wf_id in recent_ids:
         wf_id = f"{wf_id}-{issue_date.date().isoformat()}"
 
+    steps = (generated.get("steps_codeblock") or "").strip()
+    if not steps:
+        print("[workflow] LLM returned empty steps (from scratch) — skipping")
+        return None
+
     workflow = WorkflowOfWeek(
         id=wf_id,
         title=generated.get("title", "AI workflow of the week"),
@@ -144,7 +154,7 @@ def run(issue_date: datetime) -> Optional[WorkflowOfWeek]:
         domain=generated.get("domain", "work"),
         problem=generated.get("problem", ""),
         tools=generated.get("tools", ""),
-        steps_codeblock=(generated.get("steps_codeblock") or "").strip(),
+        steps_codeblock=steps,
     )
 
     append_history("workflows", [wf_id], issue_date.date().isoformat())

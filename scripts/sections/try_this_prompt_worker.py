@@ -72,6 +72,11 @@ def run(issue_date: datetime) -> Optional[PromptOfWeek]:
     if not generated:
         return None
 
+    prompt_text = (generated.get("prompt_text") or "").strip()
+    if not prompt_text:
+        print("[prompt] LLM returned empty prompt_text — skipping")
+        return None
+
     pid = generated.get("id", "prompt")
     if pid in recent_ids:
         pid = f"{pid}-{issue_date.date().isoformat()}"
@@ -82,7 +87,7 @@ def run(issue_date: datetime) -> Optional[PromptOfWeek]:
         cadence=generated.get("cadence", "weekly"),
         intro=generated.get("intro", ""),
         description=generated.get("description", ""),
-        prompt_text=(generated.get("prompt_text") or "").strip(),
+        prompt_text=prompt_text,
     )
 
     append_history("prompts", [pid], issue_date.date().isoformat())

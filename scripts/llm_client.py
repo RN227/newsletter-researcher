@@ -96,6 +96,7 @@ def summarize_news_items(raw_items: List[dict]) -> List[dict]:
         return [
             {
                 "index": i,
+                "url": item.get("url") or "",
                 "title": item.get("title") or "AI update",
                 "summary_paragraphs": [(item.get("description") or "").strip()] if item.get("description") else [],
                 "signal": "",
@@ -111,6 +112,7 @@ def summarize_news_items(raw_items: List[dict]) -> List[dict]:
         return [
             {
                 "index": i,
+                "url": item.get("url") or "",
                 "title": item.get("title") or "AI update",
                 "summary_paragraphs": [(item.get("description") or "").strip()] if item.get("description") else [],
                 "signal": "",
@@ -306,7 +308,7 @@ def generate_workflow_from_web(
     try:
         msg = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=1600,
+            max_tokens=2500,
             temperature=0.5,
             messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
         )
@@ -351,8 +353,10 @@ def generate_prompt_from_web(
     if topic:
         prompt_parts.append(f"This week's theme: {topic}")
         prompt_parts.append("Design the prompt specifically around this theme.")
-    else:
+    elif signals:
         prompt_parts.append("Use the web signals below as inspiration.")
+    else:
+        prompt_parts.append("Generate a creative, timely prompt based on your knowledge of current AI trends.")
 
     prompt_parts += [
         "",
