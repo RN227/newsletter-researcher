@@ -266,8 +266,8 @@ def generate_workflow_from_web(
         "",
         "Each step must have:",
         "  - A short bold label (e.g. 'Step 1 — Gather your raw material')",
-        "  - 3–5 lines of explanation",
-        "  - Specific prompt language the reader can copy",
+        "  - 2–3 lines of explanation maximum — tight, no padding",
+        "  - One line of example prompt language the reader can copy (not a full paragraph)",
         "",
         "Return JSON only — no markdown fences — in this exact shape:",
         '{"id":"...", "title":"...", "who_for":"...", "domain":"work", "problem":"...", "tools":"...", "steps_codeblock":"Step 1 — Label\\n\\nExplanation...\\n\\nStep 2 — Label\\n\\n..."}',
@@ -276,7 +276,7 @@ def generate_workflow_from_web(
         "  id: a short slug (e.g. 'competitor-pricing-teardown')",
         "  title: one-line description of the workflow",
         "  who_for: specific job roles (e.g. 'Sales leads, account managers, founders')",
-        "  problem: 2–4 sentences describing the pain point in relatable terms — the reader should nod and think 'yes, that's me'",
+        "  problem: 2 sentences max describing the pain point — punchy, relatable",
         "  tools: free AI tools needed (e.g. 'ChatGPT, Claude, or Gemini — free tier is fine')",
         "  steps_codeblock: all 4 steps as plain text (not JSON), with a blank line between each step",
         "",
@@ -383,7 +383,7 @@ def generate_prompt_from_web(
         "  intro: ONE sentence to intro the prompt in the newsletter",
         "         (e.g. 'This week — turn an AI into your slightly unhinged career reality-check.')",
         "  description: 1–2 sentences explaining what the prompt does and who it's for",
-        "  prompt_text: the full copy-paste prompt, opening with 'You are my...'",
+        "  prompt_text: copy-paste prompt opening with 'You are my...', max 5–6 sentences total",
         "",
     ]
 
