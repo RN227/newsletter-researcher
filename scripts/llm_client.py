@@ -28,8 +28,15 @@ def _extract_json(text: str) -> str:
             candidate = part.lstrip("json").strip()
             if candidate.startswith("{") or candidate.startswith("["):
                 return candidate
-    # Fall back: find the first { or [ and the matching last } or ]
-    for start_char, end_char in (("{", "}"), ("[", "]")):
+    # Fall back: find whichever JSON container starts first ({ or [)
+    brace_start = text.find("{")
+    bracket_start = text.find("[")
+    # Determine order: try the one that appears first in the text
+    if bracket_start != -1 and (brace_start == -1 or bracket_start < brace_start):
+        pairs = (("[", "]"), ("{", "}"))
+    else:
+        pairs = (("{", "}"), ("[", "]"))
+    for start_char, end_char in pairs:
         start = text.find(start_char)
         end = text.rfind(end_char)
         if start != -1 and end != -1 and end > start:
