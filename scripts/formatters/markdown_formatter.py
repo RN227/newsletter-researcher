@@ -105,4 +105,13 @@ def format_markdown(issue: IssueDraft) -> str:
             lines.append(r.description)
         lines.append("")
 
+    # ── LinkedIn Post ────────────────────────────────────────────────────────────
+    if issue.linkedin_post:
+        lines.append("---")
+        lines.append("")
+        lines.append("## LinkedIn post")
+        lines.append("")
+        lines.append(issue.linkedin_post)
+        lines.append("")
+
     return "\n".join(lines)

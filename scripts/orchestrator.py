@@ -12,6 +12,7 @@ from scripts.sections.try_this_prompt_worker import run as run_prompt
 from scripts.sections.weekly_reads_worker import run as run_reads
 from scripts.formatters.markdown_formatter import format_markdown
 from scripts.formatters.csv_formatter import write_links_csv
+from scripts.llm_client import generate_linkedin_post
 
 
 def parse_args() -> argparse.Namespace:
@@ -56,6 +57,19 @@ def main() -> None:
         try_this_prompt=prompt,
         weekly_reads=reads,
     )
+
+    linkedin_summary = {
+        "issue_number": args.issue_number,
+        "issue_date": issue_date.isoformat(),
+        "news_titles": [n.title for n in ai_news],
+        "social_highlights": [s.handle for s in social],
+        "workflow_title": workflow.title if workflow else None,
+        "prompt_title": prompt.title if prompt else None,
+        "reads_titles": [r.title for r in reads],
+    }
+    print("[linkedin] Generating LinkedIn post...")
+    draft.linkedin_post = generate_linkedin_post(linkedin_summary)
+    print("[linkedin] Done")
 
     markdown = format_markdown(draft)
 

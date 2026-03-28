@@ -481,6 +481,56 @@ def _fallback_reads(raw_items: List[dict]) -> List[dict]:
     ]
 
 
+def generate_linkedin_post(draft_summary: dict) -> str:
+    """
+    Generate a short LinkedIn post summarising this newsletter edition.
+    draft_summary contains: issue_number, issue_date, news_titles,
+    social_highlights, workflow_title, prompt_title, reads_titles.
+    """
+    prompt_parts = [
+        "You are helping promote Brew & AI, a weekly newsletter that makes AI simple for non-technical professionals.",
+        "Write a short LinkedIn post to announce this week's edition.",
+        "",
+        "Rules:",
+        "- 3–5 sentences max. Punchy, conversational, not corporate.",
+        "- Mention 2–3 specific highlights from the issue to give people a reason to click.",
+        "- End with a natural call to action and this subscribe link: mail.brewandai.com",
+        "- Do NOT use hashtags unless they feel completely natural (max 2 if used).",
+        "- Tone: smart, friendly, like a person — not a brand account.",
+        "- Do not use phrases like 'In this edition' or 'This week's issue' as the opening line.",
+        "  Open with the most interesting thing from the issue instead.",
+        "",
+        "This edition's content:",
+    ]
+
+    if draft_summary.get("issue_number"):
+        prompt_parts.append(f"Issue: #{draft_summary['issue_number']} — {draft_summary.get('issue_date', '')}")
+    if draft_summary.get("news_titles"):
+        prompt_parts.append(f"News stories: {', '.join(draft_summary['news_titles'])}")
+    if draft_summary.get("social_highlights"):
+        prompt_parts.append(f"Social highlights: {', '.join(draft_summary['social_highlights'])}")
+    if draft_summary.get("workflow_title"):
+        prompt_parts.append(f"Workflow of the week: {draft_summary['workflow_title']}")
+    if draft_summary.get("prompt_title"):
+        prompt_parts.append(f"Prompt of the week: {draft_summary['prompt_title']}")
+    if draft_summary.get("reads_titles"):
+        prompt_parts.append(f"Weekly reads: {', '.join(draft_summary['reads_titles'])}")
+
+    client = _client()
+    try:
+        msg = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=300,
+            temperature=0.7,
+            messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
+        )
+    except APIStatusError:
+        return f"New edition of Freshly Brewed is out — your weekly AI digest. Read it at mail.brewandai.com"
+
+    text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
+    return text.strip() or f"New edition of Freshly Brewed is out. Read it at mail.brewandai.com"
+
+
 def _extract_domain(url: str) -> str:
     try:
         from urllib.parse import urlparse

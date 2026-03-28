@@ -61,3 +61,4 @@ class IssueDraft:
     workflow_of_week: Optional[WorkflowOfWeek] = None
     try_this_prompt: Optional[PromptOfWeek] = None
     weekly_reads: List[WeeklyRead] = field(default_factory=list)
+    linkedin_post: Optional[str] = None
