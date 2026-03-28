@@ -1,70 +1,83 @@
 ☕ Freshly Brewed #3
-Google makes it easy to pack up your chat history and move to its AI assistant, Wikipedia is putting its foot down on AI-written content, The app millions use to edit videos just got a powerful AI video generator built in
+ChatGPT Is Now Showing You Ads, The US Military Just Made One AI Company Its Go-To Tech Partner, An AI Company Just Took the Government to Court — and Won
 
 Mar 28, 2026
 
 # ☕ AI in the news
 
-**Google makes it easy to pack up your chat history and move to its AI assistant**
+**ChatGPT Is Now Showing You Ads**
 
-Google has launched a set of 'switching tools' that let you import your conversation history and personal details from other AI chatbots — like ChatGPT — directly into Gemini. Think of it like porting your contacts when you switch phones, but for your AI assistant.
+OpenAI has started running ads inside ChatGPT for free users in the US. If you've been using ChatGPT without paying, expect to start seeing sponsored content woven into your experience — the same trade-off you make with Google or Instagram.
 
-This matters because your chat history with an AI can be genuinely useful — it learns your preferences, remembers context, and saves you from re-explaining yourself. Until now, switching AI tools meant starting from scratch. Google is betting that removing that friction will convince people to give Gemini a real shot.
+This matters because it signals that OpenAI is under real pressure to make money beyond subscriptions. With hundreds of millions of users, ChatGPT is now a serious advertising platform — which means your conversations could soon be shaping what ads you see, raising fresh questions about privacy and how 'neutral' your AI assistant really is.
 
-*The AI assistant wars are heating up, and the big players are now competing on convenience — expect ChatGPT and others to fire back with similar tools soon.*
+*The free lunch era of AI assistants is ending — ads are just the beginning, and your chat history may become more valuable to marketers than you'd expect.*
 
-[Read more](https://techcrunch.com/2026/03/26/you-can-now-transfer-your-chats-and-personal-information-from-other-chatbots-directly-into-gemini/)
+[Read more](https://www.reuters.com/business/media-telecom/openai-expand-ads-chatgpt-all-free-low-cost-users-information-reports-2026-03-21/)
 
-**Wikipedia is putting its foot down on AI-written content**
+**The US Military Just Made One AI Company Its Go-To Tech Partner**
 
-Wikipedia has tightened its rules around the use of AI to write or edit articles on the site. Editors who lean on AI tools to generate content are now facing stricter scrutiny — because AI-written text has a habit of sounding authoritative while quietly getting facts wrong.
+The Pentagon has officially adopted Palantir's AI software as a core system across the US military. Think of it as the military picking a single AI operating system to run on — a massive, high-stakes commitment to one company's technology.
 
-This is a big deal because Wikipedia is one of the most visited websites on the planet and a key source that other AI tools actually train on. If AI-generated errors sneak into Wikipedia, they can ripple outward and end up baked into the next generation of AI systems — a feedback loop nobody wants.
+This is a big deal because it hands enormous influence — and an enormous contract — to a single private company. It also signals that AI is no longer just a research project for the military; it's now baked into how the world's most powerful armed force actually operates day to day.
 
-*The question of who — or what — gets to write the internet's shared knowledge base is only going to get more contested as AI writing tools become cheaper and easier to use.*
+*Governments are moving fast to embed AI into critical institutions, and the companies that win those contracts early could shape how AI is used in public life for decades.*
 
-[Read more](https://techcrunch.com/2026/03/26/wikipedia-cracks-down-on-the-use-of-ai-in-article-writing/)
+[Read more](https://www.reuters.com/technology/pentagon-adopt-palantir-ai-as-core-us-military-system-memo-says-2026-03-20/)
 
-**The app millions use to edit videos just got a powerful AI video generator built in**
+**An AI Company Just Took the Government to Court — and Won**
 
-ByteDance — the company behind TikTok — has added a new AI video generation tool called Seedance 2.0 to CapCut, its hugely popular video editing app. It can create realistic video clips from text prompts or images, and it comes with built-in guardrails to prevent misuse of real people's faces or copyrighted material.
+Anthropic, the company behind the Claude AI assistant, went to court after the Trump administration placed restrictions on it related to a Defense Department dispute — and a federal judge sided with Anthropic, ordering those restrictions to be lifted.
 
-CapCut already has tens of millions of everyday users, from small business owners to content creators. Dropping a capable AI video generator directly into an app people already use means this technology isn't just for tech enthusiasts anymore — it's one tap away for anyone making a Reel or a product promo.
+This matters because it's a rare and striking example of an AI company successfully pushing back against government overreach through the courts. It shows that the legal and political battles around AI are heating up fast, and that the rules of the road are very much still being written.
 
-*AI-generated video is quietly moving from 'impressive demo' to 'thing your competitor is already using' — and the gap between professional and amateur content is about to get a lot narrower.*
+*The tug-of-war between AI companies and governments is moving from boardrooms into courtrooms — expect more legal fights like this as both sides figure out who's really in charge.*
 
-[Read more](https://techcrunch.com/2026/03/26/bytedances-new-ai-video-generation-model-dreamina-seedance-2-0-comes-to-capcut/)
+[Read more](https://techcrunch.com/2026/03/26/anthropic-wins-injunction-against-trump-administration-over-defense-department-saga/)
 
 # ☕ Trending on social
+
+🔥 Something clearly went sideways with an AI chatbot, and Katie Miller's post calling it out went viral fast — because people are equal parts horrified and entertained when these tools go off the rails in spectacular fashion. It hits a nerve because so many of us have been sold on the idea that guardrails are basically solved, and then moments like this remind us that "solved" is doing a lot of heavy lifting. The real reason it resonated? Everyone secretly wants to know how badly these things can fail — and apparently, the answer is: pretty badly.
+
+[View post](https://x.com/KatieMiller/status/2037520112996024801?s=20) — @katiemiller on x
+
+🧑‍💻 Anthropic announced that Claude can now take control of your computer — clicking, browsing, and completing tasks on your behalf while you sit back and watch. It went viral because, honestly, "AI does your computer stuff for you" is the kind of feature people have been half-joking about wanting for years, and suddenly it's just... real. Anthropic has been dropping updates almost daily lately, and this one felt like the moment the "AI assistant" era quietly became the "AI employee" era.
+
+[View post](https://x.com/claudeai/status/2036195789601374705) — @claudeai on x
+
+🔥 OpenAI's Sora — the AI video generator that caused a massive stir when it launched — appears to be getting quietly wound down, with its official account going dark as OpenAI pulls focus back to its core ChatGPT business. It caught attention because Sora was supposed to be OpenAI's big Hollywood-disrupting moment, and now it's being shelved faster than most people even got to try it. There's something very "overpromised, underwhelming, discontinued" about the whole arc that feels painfully on-brand for the current AI hype cycle.
+
+[View post](https://x.com/soraofficialapp/status/2036546752535470382) — @soraofficialapp on x
 
 # ☕ AI workflow of the week
 
 # ☕ Try this out — prompts
 
-This week — let an AI play good-cop-bad-cop with your own relationship to AI tools before your boss does it for you.
-
-With companies now tracking whether employees are actually using AI (and how much), this prompt turns the tables and helps you figure out where AI fits — or doesn't — in your real work life. Perfect for anyone feeling vague pressure to 'use AI more' but not sure what that actually means for them.
-
-```
-You are my slightly paranoid future-of-work analyst who has read every LinkedIn think-piece about AI replacing jobs and is deeply invested in making sure I come out of this era looking sharp, not obsolete. You have the energy of someone who just drank their third espresso and genuinely cannot believe people are sleeping on this stuff.
-
-Before you give me anything, you need to interrogate me first. Ask me these questions one at a time, waiting for my answer before moving on:
-
-1. What is your actual job title, and what does a typical Tuesday look like for you — be specific, not just 'meetings and emails.'
-2. Which parts of your week feel like they drain your brain the most, even though the output is kind of... fine?
-3. Which parts of your work do you secretly think no AI could ever touch — and why?
-4. Have you tried using any AI tool for work in the last month? What happened? Be honest.
-5. What would your manager or team say if they had to rate your AI adoption right now — and does that match how you feel about it?
-
-Once I have answered all five questions, produce a structured output with these four sections:
-
-**Your AI Reality Check** — A blunt one-paragraph summary of where I actually stand, no sugarcoating.
-
-**Your 3 Quick Wins** — Three specific, concrete tasks from MY job (based on what I told you) where I could use a free AI chatbot this week and actually save real time. Name the task, name the tool move, estimate the time saved.
-
-**The One Thing You Should Stop Doing Manually** — Pick the single most embarrassing time-sink from my answers and make a dramatic case for why I need to let AI handle it.
-
-**Your 30-Day AI Reputation Glow-Up** — A short, slightly over-the-top action plan so that in 30 days I look like someone who has figured this out — not someone scrambling to catch up.
-```
-
 # ☕ Weekly reads
+
+**[The next billion of AI](https://www.a16z.news/p/the-sovereign-wall-why-ais-next-billion?)**
+a16z.news
+
+This piece argues that AI's next wave of growth won't come from tech-savvy early adopters, but from people who only trust new tools when they come recommended through existing social or community networks. Worth reading if you're thinking about how AI products actually reach mainstream audiences.
+
+**[ChatGPT curing cancer?](https://x.com/paul_conyngham/status/2036940410363535823)**
+x.com
+
+A viral post exploring the claim that ChatGPT is contributing to cancer research breakthroughs. Worth a look for a quick, grounded reality check on what AI can and can't yet do in high-stakes fields like medicine.
+
+**[OpenAI new researcher](https://www.technologyreview.com/2026/03/20/1134438/openai-is-throwing-everything-into-building-a-fully-automated-researcher/)**
+technologyreview.com
+
+MIT Technology Review sat down with OpenAI's chief scientist to discuss the company's push to build an AI that can conduct scientific research entirely on its own. A rare, candid look at where the most ambitious AI development is actually headed.
+
+---
+
+## LinkedIn post
+
+The US military just picked a single AI company as its go-to tech partner. That's not a small deal.
+
+This week's Brew & AI also covers why ChatGPT is now serving you ads (and what that means for how you use it), plus an AI company that took the US government to court — and actually won.
+
+Three stories that are quietly reshaping how AI fits into business, government, and everyday life.
+
+Grab your coffee and catch up 👉 mail.brewandai.com
