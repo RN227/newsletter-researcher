@@ -37,7 +37,8 @@ def summarize_news_items(raw_items: List[dict]) -> List[dict]:
         "Avoid: overly technical benchmarks, API pricing, ML research papers, developer-only tooling.",
         "",
         "Return JSON only — no markdown, no commentary — in this exact shape:",
-        '[{"index": 0, "title": "...", "summary_paragraphs": ["para1", "para2"], "signal": "..."}, ...]',
+        '[{"index": 0, "url": "original-url-unchanged", "title": "...", "summary_paragraphs": ["para1", "para2"], "signal": "..."}, ...]',
+        "IMPORTANT: the 'url' field must be copied exactly from the input — do not modify or omit it.",
         "",
         "Pick the best 3 items from the list below (fewer if there are fewer than 3):",
         "",
@@ -95,21 +96,34 @@ def summarize_news_items(raw_items: List[dict]) -> List[dict]:
             for i, item in enumerate(raw_items[:3])
         ]
 
-    result_map = {entry.get("index"): entry for entry in parsed if isinstance(entry, dict)}
+    # Build a lookup of original URLs so we can validate LLM-returned URLs
+    valid_urls = {item.get("url") for item in raw_items if item.get("url")}
+    url_to_item = {item.get("url"): item for item in raw_items if item.get("url")}
+
     output: List[dict] = []
-    for i, item in enumerate(raw_items):
-        enriched = result_map.get(i) or {}
-        if not enriched:
+    for entry in parsed:
+        if not isinstance(entry, dict):
             continue
-        title = enriched.get("title") or item.get("title") or "AI update"
-        paras = enriched.get("summary_paragraphs") or []
+        # Use the URL the LLM returned (it has the article in context); fall back
+        # to index-based lookup only if the returned URL isn't one of our inputs.
+        llm_url = entry.get("url") or ""
+        if llm_url in valid_urls:
+            source_item = url_to_item[llm_url]
+        else:
+            idx = entry.get("index")
+            source_item = raw_items[idx] if isinstance(idx, int) and idx < len(raw_items) else {}
+        url = source_item.get("url") or llm_url or ""
+        if not url:
+            continue
+        title = entry.get("title") or source_item.get("title") or "AI update"
+        paras = entry.get("summary_paragraphs") or []
         if isinstance(paras, str):
             paras = [paras]
-        signal = enriched.get("signal") or ""
+        signal = entry.get("signal") or ""
         output.append(
             {
                 "title": title,
-                "url": item.get("url") or "",
+                "url": url,
                 "summary_paragraphs": [p for p in paras if p],
                 "signal": signal,
             }
@@ -175,7 +189,7 @@ def generate_workflow_from_web(
     Generate the 'AI Workflow of the Week' section.
     If topic is provided it overrides the web signals as the creative brief.
     """
-    if not signals and not topic:
+    if not signals and not topic and not draft:
         return None
 
     prompt_parts = [
@@ -300,10 +314,8 @@ def generate_prompt_from_web(
     """
     Generate the 'Try This Out — Prompts' section.
     If topic is provided it overrides the web signals as the creative brief.
+    Signals are optional — Claude can generate a good prompt without them.
     """
-    if not signals and not topic:
-        return None
-
     prompt_parts = [
         "You are helping write the 'Try This Out — Prompts' section of Brew & AI, a weekly AI newsletter.",
         "Audience: non-technical professionals who want to use AI in daily or weekly routines.",
