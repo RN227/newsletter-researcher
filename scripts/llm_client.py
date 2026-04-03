@@ -3,8 +3,9 @@ from __future__ import annotations
 import os
 from typing import List, Optional
 import json
+import time
 
-from anthropic import Anthropic, APIStatusError
+from anthropic import Anthropic, APIError
 
 
 def _client() -> Anthropic:
@@ -92,33 +93,27 @@ def summarize_news_items(raw_items: List[dict]) -> List[dict]:
             temperature=0.4,
             messages=[{"role": "user", "content": prompt}],
         )
-    except APIStatusError:
-        return [
-            {
-                "index": i,
-                "url": item.get("url") or "",
-                "title": item.get("title") or "AI update",
-                "summary_paragraphs": [(item.get("description") or "").strip()] if item.get("description") else [],
-                "signal": "",
-            }
-            for i, item in enumerate(raw_items[:3])
-        ]
+    except APIError as e:
+        print(f"[news] API error (attempt 1): {e} — retrying in 3s")
+        time.sleep(3)
+        try:
+            msg = client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=1200,
+                temperature=0.4,
+                messages=[{"role": "user", "content": prompt}],
+            )
+        except APIError as e2:
+            print(f"[news] API error (attempt 2): {e2} — falling back to titles only")
+            return [{"index": i, "url": item.get("url") or "", "title": item.get("title") or "AI update", "summary_paragraphs": [], "signal": ""} for i, item in enumerate(raw_items[:3])]
 
     text = _extract_json("".join(block.text for block in msg.content if block.type == "text"))  # type: ignore[attr-defined]
 
     try:
         parsed = json.loads(text)
-    except json.JSONDecodeError:
-        return [
-            {
-                "index": i,
-                "url": item.get("url") or "",
-                "title": item.get("title") or "AI update",
-                "summary_paragraphs": [(item.get("description") or "").strip()] if item.get("description") else [],
-                "signal": "",
-            }
-            for i, item in enumerate(raw_items[:3])
-        ]
+    except json.JSONDecodeError as e:
+        print(f"[news] JSON parse error: {e} — falling back to titles only")
+        return [{"index": i, "url": item.get("url") or "", "title": item.get("title") or "AI update", "summary_paragraphs": [], "signal": ""} for i, item in enumerate(raw_items[:3])]
 
     # Build a lookup of original URLs so we can validate LLM-returned URLs
     valid_urls = {item.get("url") for item in raw_items if item.get("url")}
@@ -196,7 +191,7 @@ def comment_on_social(url: str, raw_text: str | None = None, note: str | None = 
             temperature=0.6,
             messages=[{"role": "user", "content": prompt}],
         )
-    except APIStatusError:
+    except APIError:
         return note or "Interesting AI-related post worth highlighting."
 
     text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
@@ -312,9 +307,19 @@ def generate_workflow_from_web(
             temperature=0.5,
             messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
         )
-    except APIStatusError as e:
-        print(f"[workflow] API error: {e}")
-        return None
+    except APIError as e:
+        print(f"[workflow] API error (attempt 1): {e} — retrying in 3s")
+        time.sleep(3)
+        try:
+            msg = client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=2500,
+                temperature=0.5,
+                messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
+            )
+        except APIError as e2:
+            print(f"[workflow] API error (attempt 2): {e2} — giving up")
+            return None
 
     raw = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
     print(f"[workflow] Raw LLM response length: {len(raw)} chars")
@@ -404,9 +409,19 @@ def generate_prompt_from_web(
             temperature=0.7,
             messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
         )
-    except APIStatusError as e:
-        print(f"[prompt] API error: {e}")
-        return None
+    except APIError as e:
+        print(f"[prompt] API error (attempt 1): {e} — retrying in 3s")
+        time.sleep(3)
+        try:
+            msg = client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=1200,
+                temperature=0.7,
+                messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
+            )
+        except APIError as e2:
+            print(f"[prompt] API error (attempt 2): {e2} — giving up")
+            return None
 
     raw = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
     print(f"[prompt] Raw LLM response length: {len(raw)} chars")
@@ -467,7 +482,7 @@ def summarize_reads_items(raw_items: List[dict]) -> List[dict]:
             temperature=0.3,
             messages=[{"role": "user", "content": prompt}],
         )
-    except APIStatusError:
+    except APIError:
         return _fallback_reads(raw_items)
 
     text = _extract_json("".join(block.text for block in msg.content if block.type == "text"))  # type: ignore[attr-defined]
@@ -548,7 +563,7 @@ def generate_linkedin_post(draft_summary: dict) -> str:
             temperature=0.7,
             messages=[{"role": "user", "content": "\n".join(prompt_parts)}],
         )
-    except APIStatusError:
+    except APIError:
         return f"New edition of Freshly Brewed is out — your weekly AI digest. Read it at mail.brewandai.com"
 
     text = "".join(block.text for block in msg.content if block.type == "text")  # type: ignore[attr-defined]
