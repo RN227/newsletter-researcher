@@ -1,0 +1,11 @@
+- id: smart-shopping
+  title: Use AI to cut impulse buys and compare options in 5 minutes
+  who_for: Everyday shoppers, freelancers, parents, students, anyone who buys online
+  problem: People either impulse‑buy first thing they see or get stuck endlessly comparing options, so they end up overspending or giving up altogether.
+  tools: Free AI chat (ChatGPT, Claude, or Gemini) + any browser (Amazon, AliExpress, Zalando, eBay, etc.)
+  steps: |
+    1. Open the product page and copy its key details: price, top specs, and 2–3 reviews you care about.
+    2. Paste that into AI and ask: “Help me decide if this is worth buying. List pros, cons, and 2–3 better or cheaper alternatives at a similar price.”
+    3. Add your own constraints: “I want to spend under €X, prefer fast delivery, and need it for [use case].”
+    4. Ask: “Rewrite this as a 3‑item shortlist with a clear winner and why” so you can screenshot it and save for later.
+    5. Before checkout, tell AI: “Based on this shortlist, what’s one reason I should wait 24 hours and one reason to buy now?” — then decide consciously, not emotionally.
