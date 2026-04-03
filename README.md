@@ -1,46 +1,154 @@
 ## Brew & AI – Newsletter Drafting Pipeline
 
-This repo contains an automated pipeline that prepares a first-pass draft of the **Brew & AI** newsletter each week.
+Each Saturday at 09:00 UTC, GitHub Actions runs the pipeline and commits a Markdown draft to `newsletters/`. You can also trigger it manually from the Actions tab.
 
-The pipeline runs via **GitHub Actions** and:
+The draft covers all five newsletter sections: **AI in the News**, **Trending on Social**, **AI Workflow of the Week**, **Try This Out — Prompts**, and **Weekly Reads**, plus a ready-to-copy **LinkedIn post**.
 
-- Collects **fresh AI news** from the last week.
-- Uses your curated **social links** and **Weekly Reads**.
-- Rotates through a library of **AI workflows** and **fun prompts** without repeating them too often.
-- Writes a single **Markdown draft** (plus an optional CSV of links) that you can review and paste into Beehive.
+---
 
-Content for **AI in the news** and **Trending on social** is generated with Anthropic Claude using the `ANTHROPIC_API_KEY` secret in GitHub Actions.
+## Your weekly inputs
 
-### Weekly workflow (your inputs)
+During the week, update these files via the GitHub web UI (or locally). After each run, used items are automatically removed — so you'll need to re-populate them for the next issue.
 
-During the week, update these files via the GitHub web UI:
+---
 
-- `config/social_links_pending.yml` – up to ~8–10 social posts you might feature.
-- `config/weekly_reads_pending.yml` – 3–10 links you may want in **Weekly Reads**.
-- Optionally: `config/workflows.yml` and `config/prompts.yml` – reusable workflow/prompt ideas (don’t need weekly edits).
+### `config/news_links_pending.yml` — AI in the News
 
-On Saturday at 09:00 (GitHub Actions cron, in UTC) or whenever you trigger the workflow manually, GitHub Actions will:
+Paste up to ~5 article links you want considered for the news section. These take priority over RSS-fetched articles. Claude rewrites everything in the newsletter's tone — your `note` is just context to guide it.
 
-1. Run the newsletter pipeline.
-2. Generate a new draft Markdown file under `newsletters/`.
-3. (Optionally) generate a CSV summarizing AI in the news, social, and Weekly Reads links in the same folder.
+```yaml
+- title: Optional headline (Claude will rewrite it anyway)
+  url: https://...
+  note: Optional angle or context for Claude
+```
 
-### GitHub Actions secret
+**Example:**
+```yaml
+- title: Palantir now US military?
+  url: https://www.reuters.com/technology/pentagon-adopt-palantir-ai-...
+  note: Palantir is now the default AI platform for the US military
 
-In your GitHub repo:
+- title: Ads now live on ChatGPT
+  url: https://www.reuters.com/business/media-telecom/openai-expand-ads-...
+  note: OpenAI has rolled out ads to free users in the US
+```
 
-- Go to **Settings → Secrets and variables → Actions → New repository secret**.
-- Add a secret named `ANTHROPIC_API_KEY` with your Anthropic API key.
+If this file is empty, the pipeline falls back to RSS feeds automatically.
 
-The workflow reads this secret and uses Claude to:
+---
 
-- Turn raw news feeds into Brew & AI-style titles and summaries.
-- Turn your social links (from `config/social_links_pending.yml`) into short commentary paragraphs.
+### `config/social_links_pending.yml` — Trending on Social
 
-You then:
+Add 3–4 social posts you want featured. Claude writes a 2–3 sentence commentary for each.
 
-1. Open the latest draft under `drafts/`.
-2. For **AI in the news** and **Trending on social**, pick your favourite 2–3 items from the 5 suggestions by deleting the rest.
-3. Make any light copy edits.
-4. Paste the content into Beehive and publish.
+```yaml
+- platform: x                  # or: linkedin, instagram, etc.
+  handle: username              # without the @
+  url: https://x.com/...
+  note: Why this post is interesting or what angle to take
+```
 
+**Example:**
+```yaml
+- platform: x
+  handle: katiemiller
+  url: https://x.com/KatieMiller/status/...
+  note: AI going off the rails — what happened to guardrails?
+
+- platform: x
+  handle: claudeai
+  url: https://x.com/claudeai/status/...
+  note: Claude can now control your computer — shipping daily
+```
+
+---
+
+### `config/weekly_reads_pending.yml` — Weekly Reads
+
+Add 3 links. Claude fetches each page and writes a 1–2 sentence editorial description.
+
+```yaml
+- title: Display title for the link
+  url: https://...
+```
+
+**Example:**
+```yaml
+- title: The next billion of AI
+  url: https://www.a16z.news/p/the-sovereign-wall-why-ais-next-billion?
+
+- title: ChatGPT curing cancer?
+  url: https://x.com/paul_conyngham/status/...
+
+- title: OpenAI's automated researcher
+  url: https://www.technologyreview.com/2026/03/20/...
+```
+
+---
+
+### `config/workflows.yml` — AI Workflow of the Week
+
+Add a rough draft of a workflow you want featured. Claude fleshes it out into the full 4-step format. Your entry can be as sparse as a title and a few notes — Claude does the rest.
+
+If this file is empty, Claude generates a workflow from scratch using past issues as style references.
+
+```yaml
+- id: short-slug              # unique, no spaces (e.g. competitor-teardown)
+  title: One-line description of the workflow
+  who_for: Job roles this helps (e.g. "Sales leads, marketers, founders")
+  problem: 1–2 sentences on the pain point in plain language
+  tools: Free AI tools needed (e.g. "ChatGPT, Claude, or Gemini")
+  steps: |                    # rough notes — Claude will rewrite these
+    1. First rough step
+    2. Second rough step
+    ...
+```
+
+**Example:**
+```yaml
+- id: claude-cowork-doc-review
+  title: Review any document in your downloads folder without uploading it
+  who_for: Anyone who receives contracts, agreements, or dense documents
+  problem: Uploading files to AI is just enough friction that most people don't bother
+  tools: Claude Desktop (Pro or Max)
+  steps: |
+    1. Download Claude Desktop and connect your downloads folder
+    2. Ask Claude to pull up the file and flag anything unusual
+    3. Ask follow-up questions on specific clauses
+    4. Get a list of questions to send back before signing
+```
+
+Used entries are automatically removed after each run.
+
+---
+
+### `config/weekly_theme.yml` — Optional Theme Override
+
+Set a topic to guide the Workflow or Prompt sections this week. Leave blank to let Claude choose based on news signals.
+
+```yaml
+workflow_topic: ""   # e.g. "competitive intelligence for sales teams"
+prompt_topic: ""     # e.g. "help me think through a career decision"
+```
+
+---
+
+## How the pipeline works
+
+1. **News** — merges your curated links with RSS feeds, picks the best 3, rewrites in newsletter tone.
+2. **Social** — fetches each post page, writes emoji-led commentary for each.
+3. **Workflow** — if you added a draft entry, Claude polishes it into the 4-step format. If not, Claude generates one from scratch.
+4. **Prompt** — Claude generates a "You are my..." persona prompt, guided by the theme if set.
+5. **Reads** — fetches each page, writes a 1–2 sentence editorial description.
+6. **LinkedIn post** — generated automatically from the issue's highlights.
+
+All content goes through Claude before appearing in the draft — nothing is published raw.
+
+---
+
+## Setup
+
+Add your Anthropic API key as a GitHub Actions secret:
+
+**Settings → Secrets and variables → Actions → New repository secret**
+Name: `ANTHROPIC_API_KEY`
